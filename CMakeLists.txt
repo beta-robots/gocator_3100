@@ -89,3 +89,8 @@ TARGET_LINK_LIBRARIES(example_2 ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
 # Build example 3
 ADD_EXECUTABLE(example_3 src/examples/example_3.cpp)
 TARGET_LINK_LIBRARIES(example_3 ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
+
+# Build example 3
+ADD_EXECUTABLE(example_4 src/examples/example_4.cpp)
+TARGET_LINK_LIBRARIES(example_4 ${PROJECT_NAME})
+

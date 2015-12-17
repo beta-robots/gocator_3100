@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	unsigned int i,j,k;
 
 	//Hello message
-	std::cout << "Gocator example_2 running" << std::endl; 
+	std::cout << "Gocator example_3 running" << std::endl; 
 	
 	// construct Gocator API Library
 	if ((status = GoSdk_Construct(&api)) != kOK)
