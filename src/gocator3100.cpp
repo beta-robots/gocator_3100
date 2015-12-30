@@ -57,22 +57,22 @@ Gocator3100::Device::Device(const std::string & _ip_address)
 		std::cout << "Device(). Error: GoSensor_EnableData: " << status << std::endl;
 		return;
 	}
-	
-	//Obtain camera model
-	if ((status = GoSensor_Model(go_sensor_, model_name, 50)) != kOK )
-	{
-		std::cout << "Device(). Error: GoSensor_Model: " << status << std::endl;
-		return; 
-	}
-	params_.model_name_ = model_name; 
-	
+		
 	// start Gocator sensor
 	if ((status = GoSystem_Start(go_system_)) != kOK)
 	{
 		std::cout << "Device(). Error: GoSystem_Start: " << status << std::endl;
 		return;
-	}
-	
+    }
+    
+    //Obtain camera model
+    if ((status = GoSensor_Model(go_sensor_, model_name, 50)) != kOK )
+    {
+        std::cout << "Device(). Error: GoSensor_Model: " << status << std::endl;
+        return; 
+    }
+    params_.model_name_ = model_name; 
+
 	//Obtain camera Serial number
 	params_.sn_ = (unsigned int)GoSensor_Id(go_sensor_);
 	
@@ -121,7 +121,7 @@ int Gocator3100::Device::stopAquisitionThread()
 	
 }
 
-int Gocator3100::Device::getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud_) const
+int Gocator3100::Device::getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud) const
 {
 	
 }
@@ -133,10 +133,15 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_
 	GoMeasurementData *measurementData = kNULL;
 	
 	//Blocking call up to receive data or timeout
-	if (GoSystem_ReceiveData(go_system_, &dataset, RECEIVE_TIMEOUT) == kOK)
-	{		 	
+	if (GoSystem_ReceiveData(go_system_, &dataset, RECEIVE_TIMEOUT) != kOK)
+    {
+        //no message after timeout
+        std::cout << "Error: No data received during the waiting period" << std::endl;
+    }
+    else
+    {
 		std::cout << "Data message received: " << std::endl; 
-		//std::cout << "Dataset count: " << GoDataSet_Count(dataset) << std::endl;
+		std::cout << "Dataset count: " << GoDataSet_Count(dataset) << std::endl;
 		
 		// Loop for each data item in the dataset object
 		for (unsigned int ii = 0; ii < GoDataSet_Count(dataset); ii++)
@@ -148,47 +153,72 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_
 			switch(GoDataMsg_Type(dataObj))
 			{
 				case GO_DATA_MESSAGE_TYPE_STAMP:
+                {
+                    GoStampMsg stampMsg = dataObj;
+                    std::cout << "Stamp Message: " << GoStampMsg_Count(stampMsg) << std::endl;
+                    for (unsigned int jj = 0; jj < GoStampMsg_Count(stampMsg); jj++)
                     {
-                        GoStampMsg stampMsg = dataObj;
-                        std::cout << "Stamp Message batch count: " << GoStampMsg_Count(stampMsg) << std::endl;
-                        for (unsigned int jj = 0; jj < GoStampMsg_Count(stampMsg); jj++)
-                        {
-                            stamp = GoStampMsg_At(stampMsg, jj);
-                            std::cout << "  Timestamp: " << stamp->timestamp << std::endl;
-                            std::cout << "  Encoder: " << stamp->encoder << std::endl;
-                            std::cout << "  Frame index: " << stamp->frameIndex << std::endl;					
-                        }
+                        stamp = GoStampMsg_At(stampMsg, jj);
+                        std::cout << "\tTimestamp: " << stamp->timestamp << std::endl;
+                        std::cout << "\tEncoder: " << stamp->encoder << std::endl;
+                        std::cout << "\tFrame index: " << stamp->frameIndex << std::endl;					
                     }
-					break;
-					
-				case GO_DATA_MESSAGE_TYPE_MEASUREMENT:			
-                    {
-                        GoMeasurementMsg measurementMsg = dataObj;
-                        std::cout << "Measurement Message batch count: " << GoMeasurementMsg_Count(measurementMsg) << std::endl;
-                        for (unsigned int kk = 0; kk < GoMeasurementMsg_Count(measurementMsg); kk++)
-                        {
-                            measurementData = GoMeasurementMsg_At(measurementMsg, kk);
-                            std::cout << "Measurement ID: " << GoMeasurementMsg_Id(measurementMsg) << std::endl;
-                            std::cout << "Measurement Value: " << measurementData->value << std::endl;
-                            std::cout << "Measurement Decision: " << measurementData->decision << std::endl;
-                        }
-                    }
-					break;	
+                }
+                break;
                     
-                case GO_DATA_MESSAGE_TYPE_RANGE:
+                case GO_DATA_MESSAGE_TYPE_SURFACE:            
+                {  
+                    
+                    //cast to GoSurfaceMsg
+                    GoSurfaceMsg surfaceMsg = dataObj;
+                    
+                    //Get general data of the surface
+                    unsigned int row_count = GoSurfaceMsg_Length(surfaceMsg); 
+                    unsigned int exposure = GoSurfaceMsg_Exposure(surfaceMsg);
+                    unsigned int width = GoSurfaceMsg_Width(surfaceMsg);
+                    std::cout << "Surface Message" << std::endl; 
+                    std::cout << "\tExposure: " << exposure << std::endl; 
+                    std::cout << "\tLength: " <<  row_count << std::endl; 
+                    std::cout << "\tWidth: " << width << std::endl; 
+                    
+                    //get offsets and resolutions
+                    double xResolution = NM_TO_MM(GoSurfaceMsg_XResolution(surfaceMsg));
+                    double yResolution = NM_TO_MM(GoSurfaceMsg_YResolution(surfaceMsg));
+                    double zResolution = NM_TO_MM(GoSurfaceMsg_ZResolution(surfaceMsg));
+                    double xOffset = UM_TO_MM(GoSurfaceMsg_XOffset(surfaceMsg));
+                    double yOffset = UM_TO_MM(GoSurfaceMsg_YOffset(surfaceMsg));
+                    double zOffset = UM_TO_MM(GoSurfaceMsg_ZOffset(surfaceMsg));
+                    
+                    //resize the point cloud
+                    _p_cloud.resize(row_count*width);
+
+                    //run over all rows
+                    for (unsigned int ii = 0; ii < row_count; ii++)
                     {
+                        //get the pointer to row 
+                        short *data = GoSurfaceMsg_RowAt(surfaceMsg,ii);
                         
+                        //run over the width of row ii
+                        for (unsigned int jj = 0; jj < width; jj++)
+                        {
+                            //set xy
+                            _p_cloud.points[ii*row_count+jj].x = xOffset + xResolution*jj;
+                            _p_cloud.points[ii*row_count+jj].y = yOffset + yResolution*ii;
+                            
+                            //set z
+                            if (data[jj] != INVALID_RANGE_16BIT )
+                                _p_cloud.points[ii*row_count+jj].z = zOffset + zResolution*data[jj];
+                            else
+                                _p_cloud.points[ii*row_count+jj].z = INVALID_RANGE_DOUBLE;
+                        }
                     }
-                    break;
-			}
-		}
-		
+                }
+                break;
+            }
+        }
+                		
 		//destroys received message
 		GoDestroy(dataset);
-	}
-	else //no message after timeout
-	{
-		printf ("Error: No data received during the waiting period\n");
 	}
 
 	//just testing: set point cloud dimensions

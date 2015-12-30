@@ -15,8 +15,13 @@
  #include <pcl/io/pcd_io.h>
 
 //constants
-#define SENSOR_IP "192.168.1.10"	
-#define RECEIVE_TIMEOUT 20000000
+#define SENSOR_IP "192.168.1.10" // sensor I address
+#define RECEIVE_TIMEOUT 20000000 // timeout for snapshot acquisition
+#define INVALID_RANGE_16BIT ((signed short)0x8000) // gocator transmits range data as 16-bit signed integers. 0x8000 signifies invalid range data. 
+#define DOUBLE_MAX ((k64f)1.7976931348623157e+308) // 64-bit double - largest positive value.  
+#define INVALID_RANGE_DOUBLE ((k64f)-DOUBLE_MAX)   // floating point value to represent invalid range data.    
+#define NM_TO_MM(VALUE) (((k64f)(VALUE))/1000000.0)
+#define UM_TO_MM(VALUE) (((k64f)(VALUE))/1000.0)
 
 namespace Gocator3100
 {
@@ -116,7 +121,7 @@ class Device
 		 * Get the current snapshot, when in continuous acquisition
 		 * 
 		 **/		
-		int getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud_) const; 
+		int getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud) const; 
 
 		/** \brief Get a single snapshot in the same thread
 		 * 
