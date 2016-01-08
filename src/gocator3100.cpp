@@ -10,6 +10,7 @@ Gocator3100::Device::Device(const std::string & _ip_address)
 	go_api_ = kNULL;
 	go_system_ = kNULL;
 	go_sensor_ = kNULL;
+    go_setup_ = kNULL;
 	go_dataset_ = kNULL;
 	go_stamp_ptr_ = kNULL;
 	
@@ -57,13 +58,13 @@ Gocator3100::Device::Device(const std::string & _ip_address)
 		std::cout << "Device(). Error: GoSensor_EnableData: " << status << std::endl;
 		return;
 	}
-		
-	// start Gocator sensor
-	if ((status = GoSystem_Start(go_system_)) != kOK)
-	{
-		std::cout << "Device(). Error: GoSystem_Start: " << status << std::endl;
-		return;
-    }
+    
+    // retrieve setup handle
+    if ((go_setup_ = GoSensor_Setup(go_sensor_)) == kNULL)
+    {
+        std::cout << "Device(). Error: GoSensor_Setup: Invalid Handle" << std::endl;
+        return;
+    }   
     
     //Obtain camera model
     if ((status = GoSensor_Model(go_sensor_, model_name, 50)) != kOK )
@@ -75,24 +76,22 @@ Gocator3100::Device::Device(const std::string & _ip_address)
 
 	//Obtain camera Serial number
 	params_.sn_ = (unsigned int)GoSensor_Id(go_sensor_);
-	
+        
+    //Obtain exposure
+	configs_.exposure_time_ = GoSetup_Exposure(go_setup_, GO_ROLE_MAIN);
+    
+    //Obtain spacing interval 
+    configs_.spacing_interval_ = GoSetup_SpacingInterval(go_setup_, GO_ROLE_MAIN);
+    
 	//print info
 	std::cout << "Found Sensor: " << std::endl; 
 	params_.print(); 
-	
-
 }
 
 Gocator3100::Device::~Device()
 {
 	kStatus status;
 	
-	// stop Gocator sensor
-	if ((status = GoSystem_Stop(go_system_)) != kOK)
-	{
-		std::cout << "~Device(). Error: GoSystem_Stop: " << status << std::endl;
-	}
-
 	// destroy handles
 	GoDestroy(go_system_);
 	GoDestroy(go_api_);
@@ -101,19 +100,82 @@ Gocator3100::Device::~Device()
 	std::cout << "~Device(). Gocator Sensor Stopped and Device Object Destroyed." << std::endl;
 }
 
-int Gocator3100::Device::configure(const DeviceParams & _configs)
+int Gocator3100::Device::configure(const DeviceConfigs & _configs)
 {
-	
+    kStatus status;
+    
+    //set exposure
+    if ((status = GoSetup_SetExposure(go_setup_, GO_ROLE_MAIN, _configs.exposure_time_)) != kOK )
+    {
+        std::cout << "configure(): Error setting Exposure Time to " << _configs.exposure_time_ << std::endl;
+        return -1;
+    }
+    
+    //set spacing interval
+    if ((status = GoSetup_SetSpacingInterval(go_setup_, GO_ROLE_MAIN, _configs.spacing_interval_)) != kOK )
+    {
+        std::cout << "configure(): Error setting Spacing Interval to " << _configs.spacing_interval_ << std::endl;
+        return -1;
+    }
+        
+    //set this->configs_ with true values from camera
+    configs_.exposure_time_ = GoSetup_Exposure(go_setup_, GO_ROLE_MAIN);
+    configs_.spacing_interval_ = GoSetup_SpacingInterval(go_setup_, GO_ROLE_MAIN);
+    
+    //print
+    std::cout << "Configuration Setings: " << std::endl; 
+    configs_.print();
+    
+    //return
+    return 1;
 }
 
-// int Gocator3100::Device::connect()
-// {
-// 	
-// }
+int Gocator3100::Device::start()
+{
+    kStatus status;
+    
+    // start Gocator sensor
+    if ((status = GoSystem_Start(go_system_)) != kOK)
+    {
+        std::cout << "Device(). Error: GoSystem_Start: " << status << std::endl;
+        return -1;
+    }
+
+    //message to std out
+    std::cout << std::endl << "Gocator running ... " << std::endl << std::endl;
+    
+    //set this->status_ 
+    this->status_ = DEVICE_RUNNING;
+    
+    //return success
+    return 1; 
+}
+
+int Gocator3100::Device::stop()
+{
+    kStatus status;
+    
+    // stop Gocator sensor
+    if ((status = GoSystem_Stop(go_system_)) != kOK)
+    {
+        std::cout << "~Device(). Error: GoSystem_Stop: " << status << std::endl;
+        return -1; 
+    }
+
+    //message to std out
+    std::cout << std::endl << "... Gocator stopped" << std::endl << std::endl;
+    
+    //set this->status_ 
+    this->status_ = DEVICE_CONNECT;
+    
+    //return success
+    return 1; 
+}
 
 int Gocator3100::Device::startAquisitionThread()
 {
-	
+
+    
 }
 
 int Gocator3100::Device::stopAquisitionThread()
@@ -121,27 +183,32 @@ int Gocator3100::Device::stopAquisitionThread()
 	
 }
 
-int Gocator3100::Device::getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud) const
+int Gocator3100::Device::getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_cloud) const
 {
 	
 }
-int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud) const
+
+int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_cloud)
 {
 	GoDataSet dataset = kNULL;
 	GoStamp *stamp = kNULL;
 	GoDataMsg dataObj;
 	GoMeasurementData *measurementData = kNULL;
 	
+    //start Gocator acquisition
+    this->start();
+    
 	//Blocking call up to receive data or timeout
 	if (GoSystem_ReceiveData(go_system_, &dataset, RECEIVE_TIMEOUT) != kOK)
     {
         //no message after timeout
         std::cout << "Error: No data received during the waiting period" << std::endl;
+        return -1; 
     }
     else
     {
-		std::cout << "Data message received: " << std::endl; 
-		std::cout << "Dataset count: " << GoDataSet_Count(dataset) << std::endl;
+		//std::cout << "Data message received: " << std::endl; 
+		//std::cout << "Dataset count: " << GoDataSet_Count(dataset) << std::endl;
 		
 		// Loop for each data item in the dataset object
 		for (unsigned int ii = 0; ii < GoDataSet_Count(dataset); ii++)
@@ -173,13 +240,13 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_
                     GoSurfaceMsg surfaceMsg = dataObj;
                     
                     //Get general data of the surface
-                    unsigned int row_count = GoSurfaceMsg_Length(surfaceMsg); 
-                    unsigned int exposure = GoSurfaceMsg_Exposure(surfaceMsg);
+                    unsigned int row_count = GoSurfaceMsg_Length(surfaceMsg);                     
                     unsigned int width = GoSurfaceMsg_Width(surfaceMsg);
+                    unsigned int exposure = GoSurfaceMsg_Exposure(surfaceMsg);
                     std::cout << "Surface Message" << std::endl; 
-                    std::cout << "\tExposure: " << exposure << std::endl; 
                     std::cout << "\tLength: " <<  row_count << std::endl; 
                     std::cout << "\tWidth: " << width << std::endl; 
+                    std::cout << "\tExposure: " << exposure << std::endl; 
                     
                     //get offsets and resolutions
                     double xResolution = NM_TO_MM(GoSurfaceMsg_XResolution(surfaceMsg));
@@ -220,9 +287,10 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_
 		//destroys received message
 		GoDestroy(dataset);
 	}
+	
+    //stop Gocator acquisition
+    this->stop();
 
-	//just testing: set point cloud dimensions
-	_p_cloud.width = 26; 
 }
 
 int Gocator3100::Device::close()

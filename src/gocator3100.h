@@ -12,7 +12,7 @@
 
 //PCL
 #include <pcl/point_types.h>
- #include <pcl/io/pcd_io.h>
+#include <pcl/io/pcd_io.h>
 
 //constants
 #define SENSOR_IP "192.168.1.10" // sensor I address
@@ -47,7 +47,14 @@ struct DeviceParams
 //device configuration struct
 struct DeviceConfigs
 {
-	double exposure_time_;
+	double exposure_time_; //in seconds
+    double spacing_interval_; //in millimeters
+    
+    void print()
+    {
+        std::cout << "\texposure [s]: \t" << exposure_time_ << std::endl;
+        std::cout << "\tspacing [mm]: \t" << spacing_interval_ << std::endl;
+    }
 };
 
 //Device class
@@ -64,12 +71,13 @@ class Device
 		DeviceParams params_;
 		
 		//device configuration
-		DeviceParams configs_;
+		DeviceConfigs configs_;
 		
 		//GO API objects
 		kAssembly go_api_;
 		GoSystem go_system_;
 		GoSensor go_sensor_;
+        GoSetup go_setup_;
 		GoDataSet go_dataset_;
 		GoStamp *go_stamp_ptr_;
 		
@@ -100,8 +108,22 @@ class Device
 		 * Set/get device parameters to/from the camera
 		 * 
 		 **/
-		int configure(const DeviceParams & _configs);
-		
+		int configure(const DeviceConfigs & _configs);
+        
+        /** \brief Start device data acquisition
+         * 
+         * Start device data acquisition
+         * 
+         **/
+        int start(); 
+        
+        /** \brief Stop device dat acquisition
+         * 
+         * Stop device data acquisition
+         * 
+         **/
+        int stop();
+        
 		/** \brief Start continuous acquisition in a searated thread
 		 * 
 		 * Start continuous acquisition in a searated thread
@@ -121,14 +143,14 @@ class Device
 		 * Get the current snapshot, when in continuous acquisition
 		 * 
 		 **/		
-		int getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud) const; 
+		int getCurrentSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_cloud) const; 
 
 		/** \brief Get a single snapshot in the same thread
 		 * 
 		 * Get a single snapshot in the same thread
 		 * 
 		 **/				
-		int getSingleSnapshot(pcl::PointCloud<pcl::PointXYZI> & _p_cloud) const;
+		int getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_cloud);
 		
 		/** \brief Close the connection to a physical device
 		 * 
