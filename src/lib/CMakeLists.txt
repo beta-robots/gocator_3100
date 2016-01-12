@@ -78,19 +78,5 @@ SET(HDRS
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRCS})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 	
-# Build example 1
-ADD_EXECUTABLE(example_1 src/examples/example_1.c)
-TARGET_LINK_LIBRARIES(example_1 ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
-
-# Build example 2
-ADD_EXECUTABLE(example_2 src/examples/example_2.c)
-TARGET_LINK_LIBRARIES(example_2 ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
-
-# Build example 3
-ADD_EXECUTABLE(example_3 src/examples/example_3.cpp)
-TARGET_LINK_LIBRARIES(example_3 ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
-
-# Build example 4
-ADD_EXECUTABLE(example_4 src/examples/example_4.cpp)
-TARGET_LINK_LIBRARIES(example_4 ${PROJECT_NAME} ${PCL_LIBRARIES})
-
+#Build examples 
+ADD_SUBDIRECTORY(src/lib/src/examples)

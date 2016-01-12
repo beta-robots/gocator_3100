@@ -10,16 +10,6 @@ endif(COMMAND cmake_policy)
 PROJECT(gocator_3100)
 message(STATUS "Executig CMakeLists of project  ${PROJECT_NAME}.")
 
-## Find catkin macros and libraries
-find_package(
-    catkin REQUIRED 
-    COMPONENTS 
-        roscpp 
-        rospy 
-        dynamic_reconfigure 
-        sensor_msgs 
-)
-
 # DEBUG/RELEASE
 IF (NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE "RELEASE") 
@@ -44,6 +34,16 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
+## Find catkin macros and libraries
+find_package(
+    catkin REQUIRED 
+    COMPONENTS 
+        roscpp 
+        rospy 
+        dynamic_reconfigure 
+        sensor_msgs 
+)
+
 # Find point cloud Library
 FIND_PACKAGE(PCL 1.3 REQUIRED COMPONENTS)
 INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS})
@@ -51,7 +51,7 @@ LINK_DIRECTORIES(${PCL_LIBRARY_DIRS})
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
 # Set GO_SDK include paths (That could be part of a FindGocator.cmake)
-SET(GO_SDK_4 /home/andreu/dev/GO_SDK) #Should be an env variable TODO!!
+SET(GO_SDK_4 /home/andreu/dev/GO_SDK) # TODO: Should be an env variable!!
 FIND_PATH(
     GOCATOR_INCLUDES
     NAMES GoSdk/GoSdk.h
@@ -71,26 +71,22 @@ FIND_LIBRARY(
     KAPI_LIBRARIES
     NAMES kApi
     PATHS ${GO_SDK_4}/lib/gnud/) 
-# message(STATUS "Gocator Headers at ${GOCATOR_INCLUDES}.")
-# message(STATUS "Gocator Libraries at ${GOCATOR_LIBRARIES}.")
+message(STATUS "Gocator Headers found at ${GOCATOR_INCLUDES}.")
+message(STATUS "Gocator Libraries found at ${GOCATOR_LIBRARIES}.")
 
 # add other necessary include directories
 include_directories(src/ src/lib/src/ ${catkin_INCLUDE_DIRS})
 
-#SRCS files
-set(SRCS 
-      src/lib/src/point_tracker.cpp
-      src/lib/src/track_stamped.cpp
-)
+# Set source files 
+SET(SRCS 
+    src/lib/src/gocator3100.cpp)
 
-## Add messages to be generated
-add_message_files(FILES PointTracks.msg)
-
-## Generate added messages and services
-generate_messages(DEPENDENCIES std_msgs geometry_msgs)
+# Set header files 
+SET(HDRS 
+    src/lib/src/gocator3100.h)
 
 #dynamic reconfigure cfg file
-generate_dynamic_reconfigure_options(cfg/tracker_params.cfg)
+# generate_dynamic_reconfigure_options(cfg/gocator_3100_params.cfg)
 
 ## The catkin_package macro generates cmake config files for your package
 catkin_package(
@@ -98,17 +94,21 @@ catkin_package(
         roscpp 
         rospy 
         dynamic_reconfigure 
-        message_runtime 
-        cv_bridge 
-        image_transport 
         sensor_msgs 
-        geometry_msgs
-      DEPENDS 
-        OpenCV
+#       DEPENDS 
+#         PCL #??
 )
 
+#Build library (TODO: Should call a CMakeLists.txt at src/lib/)
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRCS})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
+#Build examples TODO: Should be called from a CMakeLists at at src/lib/
+ADD_SUBDIRECTORY(src/lib/src/examples)
+
 ## Declare a cpp executable
-add_executable(btr_point_tracker_node ${SRCS} src/btr_point_tracker_main.cpp)
-add_dependencies(btr_point_tracker_node ${PROJECT_NAME}_EXPORTED_TARGETS)
-target_link_libraries(btr_point_tracker_node ${OpenCV_LIBS} ${catkin_LIBRARIES})
+# add_executable(btr_point_tracker_node ${SRCS} src/btr_point_tracker_main.cpp)
+# add_dependencies(btr_point_tracker_node ${PROJECT_NAME}_EXPORTED_TARGETS)
+# target_link_libraries(btr_point_tracker_node ${OpenCV_LIBS} ${catkin_LIBRARIES})
+
 
