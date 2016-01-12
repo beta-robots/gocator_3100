@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<package>
+  <name>gocator_3100</name>
+    <version>0.0.0</version>
+    <description>
+       Point cloud acquisition from a Gocator 3100 camera.
+    </description>
+
+    <!-- One maintainer tag required, multiple allowed, one person per tag --> 
+    <maintainer email="andreu@beta-robots.com">Andreu Corominas-Murtra</maintainer>
+
+    <!-- One license tag required, multiple allowed, one license per tag -->
+    <license>BSD</license>
+
+    <!-- Url tags are optional, but mutiple are allowed, one per tag -->
+    <url type="website">https://github.com/beta-robots/gocator_3100</url>
+
+    <!-- Author tags are optional, mutiple are allowed, one per tag -->
+    <author email="andreu@beta-robots.com">Andreu Corominas-Murtra</author>
+
+    <!-- The *_depend tags are used to specify dependencies: they can be catkin packages or system dependencies -->
+    <buildtool_depend>catkin</buildtool_depend>
+    <build_depend>roscpp</build_depend>
+    <build_depend>rospy</build_depend>    
+    <build_depend>dynamic_reconfigure</build_depend>      
+    <build_depend>sensor_msgs</build_depend>
+    <run_depend>roscpp</run_depend>
+    <run_depend>rospy</run_depend>    
+    <run_depend>dynamic_reconfigure</run_depend>      
+    <run_depend>sensor_msgs</run_depend>
+
+    <!-- The export tag contains other, unspecified, tags -->
+    <export>
+        <!-- Other tools can request additional information be placed here -->
+    </export>
+</package>
