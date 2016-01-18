@@ -41,7 +41,10 @@ find_package(
         roscpp 
         rospy 
         dynamic_reconfigure 
+        message_generation
         sensor_msgs 
+        pcl_ros
+        pcl_conversions
 )
 
 # Find point cloud Library
@@ -77,13 +80,31 @@ message(STATUS "Gocator Libraries found at ${GOCATOR_LIBRARIES}.")
 # add other necessary include directories
 include_directories(src/ src/lib/src/ ${catkin_INCLUDE_DIRS})
 
-# Set source files 
-SET(SRCS 
+# Set source files for the library
+SET(SRCS_LIB 
     src/lib/src/gocator3100.cpp)
-
-# Set header files 
-SET(HDRS 
+    
+# Set header files for the library
+SET(HDRS_LIB 
     src/lib/src/gocator3100.h)
+
+# Set source files for the ROS node
+SET(SRCS_NODE 
+    src/gocator_3100_node.cpp
+    src/gocator_3100_node_main.cpp
+)
+    
+add_service_files(
+  FILES
+  PointCloudAsService.srv
+)
+
+## Generate added messages and services
+generate_messages(
+      DEPENDENCIES 
+      std_msgs 
+      sensor_msgs
+)
 
 #dynamic reconfigure cfg file
 # generate_dynamic_reconfigure_options(cfg/gocator_3100_params.cfg)
@@ -94,14 +115,23 @@ catkin_package(
         roscpp 
         rospy 
         dynamic_reconfigure 
-        sensor_msgs 
+        message_runtime 
+        sensor_msgs
+        pcl_ros
+        pcl_conversions
 #       DEPENDS 
 #         PCL #??
 )
 
 #Build library (TODO: Should call a CMakeLists.txt at src/lib/)
-ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRCS})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+ADD_LIBRARY(${PROJECT_NAME}_LIB SHARED ${SRCS_LIB})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}_LIB ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
+#Build executable
+ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS_NODE} ${SRCS_LIB})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${catkin_LIBRARIES})
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
+
 
 #Build examples TODO: Should be called from a CMakeLists at at src/lib/
 ADD_SUBDIRECTORY(src/lib/src/examples)

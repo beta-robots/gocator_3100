@@ -290,7 +290,33 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
 	
     //stop Gocator acquisition
     this->stop();
+    
+    //return success
+    return 1;
 
+}
+
+int Gocator3100::Device::getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & _p_cloud)
+{
+    unsigned int nr=10;
+    unsigned int nc=5;
+    
+    //resize
+    _p_cloud.resize(nr*nc);
+    
+    //run over all rows
+    for (unsigned int ii = 0; ii < nr; ii++)
+    {
+        //run over the width of row ii
+        for (unsigned int jj = 0; jj < nc; jj++)
+        {
+            //set xyz
+            _p_cloud.points[ii*nr+jj].x = ii*0.1;
+            _p_cloud.points[ii*nr+jj].y = ii*0.2;
+            _p_cloud.points[ii*nr+jj].z = ii*0.3;
+        }
+    }
+    return 1; 
 }
 
 int Gocator3100::Device::close()

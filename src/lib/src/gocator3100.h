@@ -62,7 +62,7 @@ class Device
 {	
 	protected:
 		//current point cloud. Maybe not necessary to be here!
-		pcl::PointCloud<pcl::PointXYZI>::Ptr p_cloud_; //p_cloud_  = new pcl::PointCloud<pcl::PointXYZ>
+		//pcl::PointCloud<pcl::PointXYZI>::Ptr p_cloud_; //p_cloud_  = new pcl::PointCloud<pcl::PointXYZ>
 		
 		//driver status
 		unsigned int status_;
@@ -151,6 +151,9 @@ class Device
 		 * 
 		 **/				
 		int getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_cloud);
+        
+        //FAKE. JUST FOR DEBUGGING WHEN NO CAMERA AVAILABLE
+        int getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & _p_cloud);
 		
 		/** \brief Close the connection to a physical device
 		 * 
