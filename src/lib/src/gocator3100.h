@@ -152,7 +152,11 @@ class Device
 		 **/				
 		int getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_cloud);
         
-        //FAKE. JUST FOR DEBUGGING WHEN NO CAMERA AVAILABLE
+        /** \brief Get a single FAKE snapshot
+         *
+         * JUST FOR DEBUGGING WHEN NO CAMERA AVAILABLE
+         * 
+         **/
         int getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & _p_cloud);
 		
 		/** \brief Close the connection to a physical device

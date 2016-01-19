@@ -257,6 +257,8 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                     double zOffset = UM_TO_MM(GoSurfaceMsg_ZOffset(surfaceMsg));
                     
                     //resize the point cloud
+                    _p_cloud.height = row_count;
+                    _p_cloud.width = width;
                     _p_cloud.resize(row_count*width);
 
                     //run over all rows
@@ -298,10 +300,12 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
 
 int Gocator3100::Device::getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & _p_cloud)
 {
-    unsigned int nr=10;
-    unsigned int nc=5;
+    unsigned int nr=5;
+    unsigned int nc=10;
     
     //resize
+    _p_cloud.height = nr;
+    _p_cloud.width = nc;
     _p_cloud.resize(nr*nc);
     
     //run over all rows
@@ -312,10 +316,12 @@ int Gocator3100::Device::getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & 
         {
             //set xyz
             _p_cloud.points[ii*nr+jj].x = ii*0.1;
-            _p_cloud.points[ii*nr+jj].y = ii*0.2;
-            _p_cloud.points[ii*nr+jj].z = ii*0.3;
+            _p_cloud.points[ii*nr+jj].y = jj*0.1;
+            _p_cloud.points[ii*nr+jj].z = cos((double)ii)+sin(double(jj));
         }
     }
+    
+    //return value
     return 1; 
 }
 

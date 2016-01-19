@@ -1,0 +1,27 @@
+<!-- Launches gocator_3100 acquisition component, and visualization according rviz param  -->
+
+<launch>
+
+    <!-- User Args  -->
+    <arg name="rviz" default="true" />  <!-- rviz visualization or not  -->
+    
+    <!-- goactor_3100 node -->
+    <node   
+        pkg="gocator_3100"
+        type="gocator_3100"
+        name="gocator_3100"
+        output="screen">
+    </node>      
+    
+    <!--visualization-->
+    <group if="$(arg rviz)">
+        <node 
+            name="rviz"
+            pkg="rviz"
+            type="rviz" 
+            args="-d $(find gocator_3100)/rviz/gocator_3100.rviz">
+        </node>
+    </group>
+    
+</launch>
+

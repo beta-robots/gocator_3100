@@ -41,7 +41,8 @@ find_package(
         roscpp 
         rospy 
         dynamic_reconfigure 
-        message_generation
+#         message_generation
+        std_msgs
         sensor_msgs 
         pcl_ros
         pcl_conversions
@@ -94,17 +95,17 @@ SET(SRCS_NODE
     src/gocator_3100_node_main.cpp
 )
     
-add_service_files(
-  FILES
-  PointCloudAsService.srv
-)
+# add_service_files(
+#   FILES
+#   PointCloudAsService.srv
+# )
 
 ## Generate added messages and services
-generate_messages(
-      DEPENDENCIES 
-      std_msgs 
-      sensor_msgs
-)
+# generate_messages(
+#       DEPENDENCIES 
+#       std_msgs 
+#       sensor_msgs
+# )
 
 #dynamic reconfigure cfg file
 # generate_dynamic_reconfigure_options(cfg/gocator_3100_params.cfg)
@@ -115,12 +116,11 @@ catkin_package(
         roscpp 
         rospy 
         dynamic_reconfigure 
-        message_runtime 
+#         message_runtime 
+        std_msgs
         sensor_msgs
         pcl_ros
         pcl_conversions
-#       DEPENDS 
-#         PCL #??
 )
 
 #Build library (TODO: Should call a CMakeLists.txt at src/lib/)

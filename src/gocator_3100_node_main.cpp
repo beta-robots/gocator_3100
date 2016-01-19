@@ -20,6 +20,26 @@ int main(int argc, char **argv)
             //execute pending callbacks
             ros::spinOnce(); 
             
+            //switch according run mode
+            switch(gocator.runMode())
+            {
+                case SNAPSHOT:
+                    //check if pending snapshot request
+                    if ( gocator.isRequest() )
+                    {
+                        gocator.resetRequest();
+                        gocator.publish(); 
+                    }
+                    break;
+                    
+                case PUBLISHER:
+                    gocator.publish(); 
+                    break;
+                    
+                default:
+                    break;
+            }
+            
             //relax to fit output rate
             loop_rate.sleep();            
       }
