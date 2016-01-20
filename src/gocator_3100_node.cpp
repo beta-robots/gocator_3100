@@ -4,7 +4,8 @@ Gocator3100Node::Gocator3100Node() :
     run_mode_(SNAPSHOT),
     is_request_(false),
     g3100_camera_("192.168.1.10"), 
-    nh_(ros::this_node::getName())
+    nh_(ros::this_node::getName()),
+    rate_(1)
 {
     
     //debugging
@@ -19,6 +20,12 @@ Gocator3100Node::Gocator3100Node() :
     //set the server
     //pcl_server_ = nh_.advertiseService("pcl_snapshot", &Gocator3100Node::pointCloudSnapshotService, this);
 
+    //set parameters TODO: To be get from nh_getParam() (yaml file)
+    rate_ = 0.1;
+    frame_name_ = "gocator";
+    device_params_.exposure_time_ = 40000;
+    device_params_.spacing_interval_ = 0.1;
+    g3100_camera_.configure(device_params_);
 }
 
 Gocator3100Node::~Gocator3100Node()
@@ -44,11 +51,11 @@ void Gocator3100Node::resetRequest()
 void Gocator3100Node::publish()
 {    
     //call gocator 
-    //if ( g3100_camera_.getSingleSnapshot(cloud) == 1 )
-    if ( g3100_camera_.getSingleSnapshotFake(cloud_) == 1 )
+    if ( g3100_camera_.getSingleSnapshot(cloud_) == 1 )
+    //if ( g3100_camera_.getSingleSnapshotFake(cloud_) == 1 )
     {
         cloud_.header.stamp = ros::Time::now().toSec(); //TODO: should be set by the Gocator3100::Device class
-        cloud_.header.frame_id = "gocator"; //TODO: Should be a node param
+        cloud_.header.frame_id = frame_name_; //TODO: Should be a node param
         snapshot_publisher_.publish(cloud_);
     }
     else
@@ -57,6 +64,10 @@ void Gocator3100Node::publish()
     }
 }
 
+void Gocator3100Node::sleep()
+{
+    rate_.sleep();
+}
 
 void Gocator3100Node::snapshotRequestCallback(const std_msgs::Empty::ConstPtr& _msg)
 {

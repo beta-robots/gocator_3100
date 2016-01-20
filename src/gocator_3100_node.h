@@ -55,6 +55,13 @@ class Gocator3100Node
         //point cloud server
         //ros::ServiceServer pcl_server_; 
         
+        //node parameters
+        ros::Rate rate_; //loop rate
+        std::string frame_name_; //name of the frame of references with respect cloud are published
+        
+        //camera device parameters
+        Gocator3100::DeviceConfigs device_params_;
+        
     public:
         //constructor
         Gocator3100Node();
@@ -73,6 +80,9 @@ class Gocator3100Node
         
         //Call to device snapshot acquisition and publish the point cloud
         void publish();
+        
+        //sleep up to adjusting loop rate
+        void sleep(); 
                         
         //Service callback implementing the point cloud snapshot
         //bool pointCloudSnapshotService(gocator_3100::PointCloudAsService::Request  & _request, gocator_3100::PointCloudAsService::Response & _reply);

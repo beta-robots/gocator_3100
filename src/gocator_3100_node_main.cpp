@@ -12,7 +12,7 @@ int main(int argc, char **argv)
       Gocator3100Node gocator;
       
       //set node loop rate
-      ros::Rate loop_rate(5);
+      //ros::Rate loop_rate(0.1);
       
       //node loop 
       while ( ros::ok() )
@@ -41,7 +41,8 @@ int main(int argc, char **argv)
             }
             
             //relax to fit output rate
-            loop_rate.sleep();            
+            //loop_rate.sleep();            
+            gocator.sleep();            
       }
             
       //exit program
