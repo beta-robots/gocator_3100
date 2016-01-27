@@ -1,16 +1,11 @@
 #include "gocator_3100_node.h"
 
 Gocator3100Node::Gocator3100Node() :
-    run_mode_(SNAPSHOT),
-    is_request_(false),
-    g3100_camera_("192.168.1.10"), 
+//     run_mode_(SNAPSHOT),
+//     g3100_camera_("192.168.1.10"), 
     nh_(ros::this_node::getName()),
-    rate_(1)
-{
-    
-    //debugging
-    run_mode_ = PUBLISHER;
-        
+    is_request_(false)
+{      
     //set the subscriber
     snapshot_request_ = nh_.subscribe("snapshot_request", 1, &Gocator3100Node::snapshotRequestCallback, this);
     
@@ -20,17 +15,49 @@ Gocator3100Node::Gocator3100Node() :
     //set the server
     //pcl_server_ = nh_.advertiseService("pcl_snapshot", &Gocator3100Node::pointCloudSnapshotService, this);
 
-    //set parameters TODO: To be get from nh_getParam() (yaml file)
-    rate_ = 0.1;
-    frame_name_ = "gocator";
-    device_params_.exposure_time_ = 40000;
-    device_params_.spacing_interval_ = 0.1;
-    g3100_camera_.configure(device_params_);
+    //Read params from the yaml configuration file
+    std::string ip_addr;
+    double int_param; 
+    nh_.getParam("ip_address", ip_addr);
+    nh_.getParam("run_mode", int_param); this->run_mode_ = (RunMode)int_param;
+    nh_.getParam("rate", this->rate_);
+    nh_.getParam("frame_name", this->frame_name_);
+    nh_.getParam("exposure", this->device_params_.exposure_time_);
+    nh_.getParam("spacing", this->device_params_.spacing_interval_);
+    
+    //DEBUGGING: print
+    std::cout << "YAML Setings: " << std::endl; 
+    std::cout << "\tIP ad: \t" << ip_addr << std::endl;
+    std::cout << "\trun mode: \t" << run_mode_ << std::endl;
+    std::cout << "\trate: \t" << rate_  << std::endl;
+    std::cout << "\tframe name: \t" << frame_name_ << std::endl;
+    std::cout << "\texposure [us]: \t" << device_params_.exposure_time_ << std::endl;
+    std::cout << "\tspacing [mm]: \t" << device_params_.spacing_interval_ << std::endl;
+   
+    //old defaults
+//     ip_addr = "192.168.1.10"
+//     run_mode_ = PUBLISHER;
+//     rate_ = 0.1;
+//     frame_name_ = "gocator";
+//     device_params_.exposure_time_ = 40000;
+//     device_params_.spacing_interval_ = 0.1;
+    
+    //create a device object
+    g3100_camera_ = new Gocator3100::Device(ip_addr); 
+    
+    //configure according yaml params
+    g3100_camera_->configure(device_params_);
+    
+    //print
+    std::cout << "ROS node Setings: " << std::endl; 
+    std::cout << "\trun mode: \t" << run_mode_ << std::endl;
+    std::cout << "\trate: \t" << rate_  << std::endl;
+    std::cout << "\tframe name: \t" << frame_name_ << std::endl;
 }
 
 Gocator3100Node::~Gocator3100Node()
 {
-
+    delete g3100_camera_; 
 }
 
 RunMode Gocator3100Node::runMode() const
@@ -51,7 +78,7 @@ void Gocator3100Node::resetRequest()
 void Gocator3100Node::publish()
 {    
     //call gocator 
-    if ( g3100_camera_.getSingleSnapshot(cloud_) == 1 )
+    if ( g3100_camera_->getSingleSnapshot(cloud_) == 1 )
     //if ( g3100_camera_.getSingleSnapshotFake(cloud_) == 1 )
     {
         cloud_.header.stamp = ros::Time::now().toSec(); //TODO: should be set by the Gocator3100::Device class
@@ -64,9 +91,9 @@ void Gocator3100Node::publish()
     }
 }
 
-void Gocator3100Node::sleep()
+double Gocator3100Node::rate() const
 {
-    rate_.sleep();
+    return rate_;
 }
 
 void Gocator3100Node::snapshotRequestCallback(const std_msgs::Empty::ConstPtr& _msg)

@@ -15,8 +15,11 @@
 // #include "gocator_3100/PointCloudAsService.h" //custom "snapshot" service
 // #include <sensor_msgs/PointCloud2.h> 
 
+//ROS dynamic configure
+#include <gocator_3100/gocator_3100_paramsConfig.h>
+
 //enum run mode
-enum RunMode {SNAPSHOT,PUBLISHER};
+enum RunMode {SNAPSHOT=0,PUBLISHER};
 
 /** \brief Gocator3100 ROS wrapping class
  * 
@@ -30,15 +33,9 @@ enum RunMode {SNAPSHOT,PUBLISHER};
 class Gocator3100Node
 {
     protected:
-            
-        //run mode: The node acts as a server, or a continuous pcl publisher
-        RunMode run_mode_;
-        
-        //Indicates if a request has arrived
-        bool is_request_; 
-            
+                        
         //Device object with HW API
-        Gocator3100::Device g3100_camera_;
+        Gocator3100::Device *g3100_camera_;
         
         //ros node handle
         ros::NodeHandle nh_;
@@ -55,10 +52,14 @@ class Gocator3100Node
         //point cloud server
         //ros::ServiceServer pcl_server_; 
         
-        //node parameters
-        ros::Rate rate_; //loop rate
-        std::string frame_name_; //name of the frame of references with respect cloud are published
+        //Indicates if a request has arrived
+        bool is_request_;         
         
+        //node parameters
+        double rate_; //loop rate
+        std::string frame_name_; //name of the frame of references with respect cloud are published
+        RunMode run_mode_;//run mode: The node acts as a server, or a continuous pcl publisher
+                
         //camera device parameters
         Gocator3100::DeviceConfigs device_params_;
         
@@ -81,8 +82,8 @@ class Gocator3100Node
         //Call to device snapshot acquisition and publish the point cloud
         void publish();
         
-        //sleep up to adjusting loop rate
-        void sleep(); 
+        //returns rate_ value
+        double rate() const; 
                         
         //Service callback implementing the point cloud snapshot
         //bool pointCloudSnapshotService(gocator_3100::PointCloudAsService::Request  & _request, gocator_3100::PointCloudAsService::Response & _reply);

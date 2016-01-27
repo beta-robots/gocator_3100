@@ -1,0 +1,20 @@
+
+#*************** gocator_3100 node and device parameters ************************
+
+#IP address of the camera device
+ip_address: "192.168.1.10"
+
+#run mode: run mode: 0->SNAPSHOT, 1->PUBLISHER
+run_mode: 1
+
+#loop rate in hz
+rate: 0.1
+
+#frame name to which point cloud is referenced
+frame_name: "gocator"
+
+#camera exposure [us]
+exposure: 40000
+
+#camera point cloud grid spacing [mm]
+spacing: 0.1

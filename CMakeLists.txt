@@ -108,7 +108,7 @@ SET(SRCS_NODE
 # )
 
 #dynamic reconfigure cfg file
-# generate_dynamic_reconfigure_options(cfg/gocator_3100_params.cfg)
+generate_dynamic_reconfigure_options(cfg/gocator_3100_params.cfg)
 
 ## The catkin_package macro generates cmake config files for your package
 catkin_package(
@@ -130,8 +130,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}_LIB ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES}
 #Build executable
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS_NODE} ${SRCS_LIB})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${catkin_LIBRARIES})
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp)
-
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
 #Build examples TODO: Should be called from a CMakeLists at at src/lib/
 ADD_SUBDIRECTORY(src/lib/src/examples)

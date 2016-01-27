@@ -11,6 +11,7 @@
         type="gocator_3100"
         name="gocator_3100"
         output="screen">
+        <rosparam command="load" file="$(find gocator_3100)/config/gocator_3100_params.yaml"/>
     </node>      
     
     <!--visualization-->
