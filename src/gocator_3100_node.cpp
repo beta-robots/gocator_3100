@@ -25,23 +25,6 @@ Gocator3100Node::Gocator3100Node() :
     nh_.getParam("exposure", this->device_params_.exposure_time_);
     nh_.getParam("spacing", this->device_params_.spacing_interval_);
     
-    //DEBUGGING: print
-    std::cout << "YAML Setings: " << std::endl; 
-    std::cout << "\tIP ad: \t" << ip_addr << std::endl;
-    std::cout << "\trun mode: \t" << run_mode_ << std::endl;
-    std::cout << "\trate: \t" << rate_  << std::endl;
-    std::cout << "\tframe name: \t" << frame_name_ << std::endl;
-    std::cout << "\texposure [us]: \t" << device_params_.exposure_time_ << std::endl;
-    std::cout << "\tspacing [mm]: \t" << device_params_.spacing_interval_ << std::endl;
-   
-    //old defaults
-//     ip_addr = "192.168.1.10"
-//     run_mode_ = PUBLISHER;
-//     rate_ = 0.1;
-//     frame_name_ = "gocator";
-//     device_params_.exposure_time_ = 40000;
-//     device_params_.spacing_interval_ = 0.1;
-    
     //create a device object
     g3100_camera_ = new Gocator3100::Device(ip_addr); 
     
@@ -51,7 +34,7 @@ Gocator3100Node::Gocator3100Node() :
     //print
     std::cout << "ROS node Setings: " << std::endl; 
     std::cout << "\trun mode: \t" << run_mode_ << std::endl;
-    std::cout << "\trate: \t" << rate_  << std::endl;
+    std::cout << "\trate [hz]: \t" << rate_  << std::endl;
     std::cout << "\tframe name: \t" << frame_name_ << std::endl;
 }
 

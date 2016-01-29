@@ -142,7 +142,7 @@ int Gocator3100::Device::start()
     }
 
     //message to std out
-    std::cout << std::endl << "Gocator running ... " << std::endl << std::endl;
+    std::cout << "Gocator running ... " << std::endl;
     
     //set this->status_ 
     this->status_ = DEVICE_RUNNING;
@@ -163,7 +163,7 @@ int Gocator3100::Device::stop()
     }
 
     //message to std out
-    std::cout << std::endl << "... Gocator stopped" << std::endl << std::endl;
+    std::cout << "... Gocator stopped" << std::endl << std::endl;
     
     //set this->status_ 
     this->status_ = DEVICE_CONNECT;
@@ -222,13 +222,13 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
 				case GO_DATA_MESSAGE_TYPE_STAMP:
                 {
                     GoStampMsg stampMsg = dataObj;
-                    std::cout << "Stamp Message: " << GoStampMsg_Count(stampMsg) << std::endl;
+                    //std::cout << "Stamp Message: " << GoStampMsg_Count(stampMsg) << std::endl;
                     for (unsigned int jj = 0; jj < GoStampMsg_Count(stampMsg); jj++)
                     {
                         stamp = GoStampMsg_At(stampMsg, jj);
-                        std::cout << "\tTimestamp: " << stamp->timestamp << std::endl;
-                        std::cout << "\tEncoder: " << stamp->encoder << std::endl;
-                        std::cout << "\tFrame index: " << stamp->frameIndex << std::endl;					
+                        //std::cout << "\tTimestamp: " << stamp->timestamp << std::endl;
+                        //std::cout << "\tEncoder: " << stamp->encoder << std::endl;
+                        //std::cout << "\tFrame index: " << stamp->frameIndex << std::endl;					
                     }
                 }
                 break;
@@ -243,10 +243,10 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                     unsigned int row_count = GoSurfaceMsg_Length(surfaceMsg);                     
                     unsigned int width = GoSurfaceMsg_Width(surfaceMsg);
                     unsigned int exposure = GoSurfaceMsg_Exposure(surfaceMsg);
-                    std::cout << "Surface Message" << std::endl; 
-                    std::cout << "\tLength: " <<  row_count << std::endl; 
-                    std::cout << "\tWidth: " << width << std::endl; 
-                    std::cout << "\tExposure: " << exposure << std::endl; 
+                    //std::cout << "Surface Message" << std::endl; 
+                    //std::cout << "\tLength: " <<  row_count << std::endl; 
+                    //std::cout << "\tWidth: " << width << std::endl; 
+                    //std::cout << "\tExposure: " << exposure << std::endl; 
                     
                     //get offsets and resolutions
                     double xResolution = NM_TO_MM(GoSurfaceMsg_XResolution(surfaceMsg));
@@ -255,6 +255,8 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                     double xOffset = UM_TO_MM(GoSurfaceMsg_XOffset(surfaceMsg));
                     double yOffset = UM_TO_MM(GoSurfaceMsg_YOffset(surfaceMsg));
                     double zOffset = UM_TO_MM(GoSurfaceMsg_ZOffset(surfaceMsg));
+                    
+                    //std::cout << "zOffset: " << zOffset << std::endl;
                     
                     //resize the point cloud
                     _p_cloud.height = row_count;
@@ -270,15 +272,15 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                         //run over the width of row ii
                         for (unsigned int jj = 0; jj < width; jj++)
                         {
-                            //set xy
-                            _p_cloud.points[ii*row_count+jj].x = xOffset + xResolution*jj;
-                            _p_cloud.points[ii*row_count+jj].y = yOffset + yResolution*ii;
+                            //set xy in meters. x component inverted to fulfill right-handed frame (Gocator is left-handed!)
+                            _p_cloud.points[ii*row_count+jj].x = -0.001*(xOffset + xResolution*jj); 
+                            _p_cloud.points[ii*row_count+jj].y = 0.001*(yOffset + yResolution*ii);
                             
                             //set z
                             if (data[jj] != INVALID_RANGE_16BIT )
-                                _p_cloud.points[ii*row_count+jj].z = zOffset + zResolution*data[jj];
+                                _p_cloud.points[ii*row_count+jj].z = 0.001*(zOffset + zResolution*data[jj]);
                             else
-                                _p_cloud.points[ii*row_count+jj].z = INVALID_RANGE_DOUBLE;
+                                _p_cloud.points[ii*row_count+jj].z = 0.001*(INVALID_RANGE_DOUBLE);
                         }
                     }
                 }
