@@ -8,20 +8,23 @@
 
     <!--3D model as a robot robot description and tf-->
     <group if="$(arg model_tf)">
+    
+        <!-- Load robot description -->
         <param 
             name="robot_description" 
             command="$(find xacro)/xacro.py $(find gocator_3100)/urdf/gocator_3109_example.urdf.xacro"/>            
+            
         <!-- Run joint state publisher (Gets robot_description from parameter server)-->
         <node pkg="joint_state_publisher"
             type="joint_state_publisher"
-            name="agv_joint_state_publisher" >
+            name="gocator_joint_state_publisher" >
         </node>
 
         <!-- Run state publisher (Gets robot_description from parameter server)-->
         <node pkg="robot_state_publisher"
             type="robot_state_publisher"
-            name="agv_state_publisher" >
-            <param name="~publish_frequency" value="10" />
+            name="gocator_state_publisher" >
+            <param name="~publish_frequency" value="5" />
         </node>
     </group>
     
