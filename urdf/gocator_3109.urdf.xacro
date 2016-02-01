@@ -33,7 +33,7 @@
         <joint name="${name}_point_cloud_anchor" type="fixed" >
             <parent link="${name}"/>
             <child link="${name}_point_cloud"/>
-            <origin xyz="0 0 ${0.0942+0.157+0.035}" rpy="0 3.141592 0"/>  <!--27.9cm from parent -->
+            <origin xyz="0 0 ${0.0942+0.157+0.035}" rpy="0 3.141592 1.570796"/>  <!--27.9cm from parent -->
         </joint>       
 
         <link name="${name}_point_cloud"/>

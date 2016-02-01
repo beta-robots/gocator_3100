@@ -60,12 +60,15 @@ void Gocator3100Node::resetRequest()
 
 void Gocator3100Node::publish()
 {    
+    ros::Time ts;
+    
     //call gocator 
     if ( g3100_camera_->getSingleSnapshot(cloud_) == 1 )
     //if ( g3100_camera_.getSingleSnapshotFake(cloud_) == 1 )
     {
-        cloud_.header.stamp = ros::Time::now().toSec(); //TODO: should be set by the Gocator3100::Device class
-        cloud_.header.frame_id = frame_name_; //TODO: Should be a node param
+        ts = ros::Time::now();
+        cloud_.header.stamp = (pcl::uint64_t)(ts.toSec()*1e6); //TODO: should be set by the Gocator3100::Device class
+        cloud_.header.frame_id = frame_name_; 
         snapshot_publisher_.publish(cloud_);
     }
     else

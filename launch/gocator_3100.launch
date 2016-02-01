@@ -4,7 +4,7 @@
 
     <!-- User Args  -->
     <arg name="rviz" default="true" />  <!-- rviz visualization or not  -->
-    <arg name="model_tf" default="true" />  <!-- 3D model visualization and tf  -->
+    <arg name="model_tf" default="false" />  <!-- 3D model visualization and tf  -->
 
     <!--3D model as a robot robot description and tf-->
     <group if="$(arg model_tf)">
