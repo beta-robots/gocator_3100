@@ -14,7 +14,8 @@
 
         <link name="${name}">
             <visual>
-                <origin xyz="0 0 0.05" rpy="0 0 0"/>
+                <!-- <origin xyz="0 0 0.05" rpy="0 0 0"/> -->
+                <origin xyz="0 0 0" rpy="0 0 0"/> -->
                 <geometry>
                     <!-- <box size="0.156 0.05 0.1"/> -->
                     <mesh filename="package://gocator_3100/urdf/gocator_3109a.stl" scale="0.001 0.001 0.001"/>
