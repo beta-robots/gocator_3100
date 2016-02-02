@@ -11,7 +11,8 @@
 #include <ros/ros.h>
 #include <pcl_ros/point_cloud.h> //PCL-ROS interoperability
 #include <pcl_conversions/pcl_conversions.h> //conversions from/to PCL/ROS
-#include <std_msgs/Empty.h> //odometry (input)
+#include <std_msgs/Empty.h> //snapshot request
+#include <visualization_msgs/Marker.h> //publish bounds of gocator field of view
 // #include "gocator_3100/PointCloudAsService.h" //custom "snapshot" service
 // #include <sensor_msgs/PointCloud2.h> 
 
@@ -46,9 +47,15 @@ class Gocator3100Node
         //Publisher. Snapshots are published through this topic
         ros::Publisher snapshot_publisher_; 
         
+        //Publisher. Line markers bounding the camera field of view
+        ros::Publisher fov_publisher_; 
+        
         //A pcl point cloud, used to get data and publish it
         pcl::PointCloud<pcl::PointXYZ> cloud_; 
 
+        //Marker message bounding the camera field of view
+        visualization_msgs::Marker fov_marker_msg_;
+        
         //point cloud server
         //ros::ServiceServer pcl_server_; 
         
@@ -59,6 +66,7 @@ class Gocator3100Node
         double rate_; //loop rate
         std::string frame_name_; //name of the frame of references with respect cloud are published
         RunMode run_mode_;//run mode: The node acts as a server, or a continuous pcl publisher
+        bool fov_viz_; // enable field of view visualization
                 
         //camera device parameters
         Gocator3100::DeviceConfigs device_params_;
@@ -82,8 +90,14 @@ class Gocator3100Node
         //Call to device snapshot acquisition and publish the point cloud
         void publish();
         
+        //publish the filed of view wire frame
+        void publish_fov();
+        
         //returns rate_ value
         double rate() const; 
+        
+        //returns fov_viz_
+        bool isFovViz() const;
                         
         //Service callback implementing the point cloud snapshot
         //bool pointCloudSnapshotService(gocator_3100::PointCloudAsService::Request  & _request, gocator_3100::PointCloudAsService::Response & _reply);

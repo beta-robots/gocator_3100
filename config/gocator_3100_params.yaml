@@ -17,4 +17,4 @@ frame_name: "gocator_point_cloud"
 exposure: 40000
 
 #camera point cloud grid spacing [mm]
-spacing: 0.2
+spacing: 0.1

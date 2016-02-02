@@ -43,7 +43,9 @@
             name="rviz"
             pkg="rviz"
             type="rviz" 
-            args="-d $(find gocator_3100)/rviz/gocator_3100.rviz">
+            args="-d $(find zyx_scanner_robot)/rviz/demo1.rviz">
+<!--             "-d $(find gocator_3100)/rviz/gocator_3100.rviz" -->
+<!--             "-d $(find zyx_scanner_robot)/rviz/demo1.rviz" -->
         </node>
     </group>
     

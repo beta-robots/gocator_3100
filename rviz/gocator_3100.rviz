@@ -3,7 +3,11 @@ Panels:
     Help Height: 0
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Global Options1
+        - /PointCloud21
+        - /TF1
+        - /Marker1
       Splitter Ratio: 0.5
     Tree Height: 801
   - Class: rviz/Selection
@@ -49,15 +53,15 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 0.02017
-        Min Value: 0
+        Max Value: 0.02416
+        Min Value: -0.03491
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/PointCloud2
       Color: 255; 255; 255
       Color Transformer: AxisColor
-      Decay Time: 0
+      Decay Time: 1000
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
@@ -75,7 +79,7 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 1
+    - Alpha: 0.3
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -85,6 +89,39 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        anchor:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ee_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        flange:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        forearm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         gocator:
           Alpha: 1
           Show Axes: false
@@ -94,10 +131,113 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        podium:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        shoulder_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        table:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        tool0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        upper_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         world:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        wrist_1_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wrist_2_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wrist_3_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        zyx_frame_bottom_east:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_bottom_north:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_bottom_south:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_bottom_west:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_col_northeast:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_col_northwest:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_col_southeast:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_col_southwest:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_top_east:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_top_north:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_top_south:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        zyx_frame_top_west:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -109,23 +249,133 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        anchor:
+          Value: true
+        base:
+          Value: true
+        base_link:
+          Value: true
+        camera:
+          Value: true
+        ee_link:
+          Value: true
+        flange:
+          Value: true
+        forearm_link:
+          Value: true
         gocator:
           Value: true
         gocator_point_cloud:
           Value: true
+        podium:
+          Value: true
+        shoulder_link:
+          Value: true
+        table:
+          Value: true
+        tool0:
+          Value: true
+        upper_arm_link:
+          Value: true
         world:
+          Value: true
+        wrist_1_link:
+          Value: true
+        wrist_2_link:
+          Value: true
+        wrist_3_link:
+          Value: true
+        zyx_frame:
+          Value: true
+        zyx_frame_bottom_east:
+          Value: true
+        zyx_frame_bottom_north:
+          Value: true
+        zyx_frame_bottom_south:
+          Value: true
+        zyx_frame_bottom_west:
+          Value: true
+        zyx_frame_col_northeast:
+          Value: true
+        zyx_frame_col_northwest:
+          Value: true
+        zyx_frame_col_southeast:
+          Value: true
+        zyx_frame_col_southwest:
+          Value: true
+        zyx_frame_top_east:
+          Value: true
+        zyx_frame_top_north:
+          Value: true
+        zyx_frame_top_south:
+          Value: true
+        zyx_frame_top_west:
           Value: true
       Marker Scale: 0.1
       Name: TF
-      Show Arrows: true
+      Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
         world:
-          gocator:
-            gocator_point_cloud:
+          anchor:
+            {}
+          base_link:
+            base:
+              {}
+            shoulder_link:
+              upper_arm_link:
+                forearm_link:
+                  wrist_1_link:
+                    wrist_2_link:
+                      wrist_3_link:
+                        ee_link:
+                          {}
+                        tool0:
+                          camera:
+                            gocator:
+                              gocator_point_cloud:
+                                {}
+                          flange:
+                            {}
+          podium:
+            {}
+          table:
+            {}
+          zyx_frame:
+            zyx_frame_bottom_east:
+              {}
+            zyx_frame_bottom_north:
+              {}
+            zyx_frame_bottom_south:
+              {}
+            zyx_frame_bottom_west:
+              {}
+            zyx_frame_col_northeast:
+              {}
+            zyx_frame_col_northwest:
+              {}
+            zyx_frame_col_southeast:
+              {}
+            zyx_frame_col_southwest:
+              {}
+            zyx_frame_top_east:
+              {}
+            zyx_frame_top_north:
+              {}
+            zyx_frame_top_south:
+              {}
+            zyx_frame_top_west:
               {}
       Update Interval: 0
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /gocator_3100/fov_markers
+      Name: Marker
+      Namespaces:
+        "": true
+      Queue Size: 1
       Value: true
   Enabled: true
   Global Options:
@@ -151,22 +401,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 0.554022
+      Distance: 1.43556
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0666998
-        Y: 0.0718987
-        Z: 0.116039
+        X: 0.0306254
+        Y: -0.0122381
+        Z: -0.00735062
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.450401
+      Pitch: 0.519801
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.12039
+      Yaw: 1.04723
     Saved: ~
 Window Geometry:
   Displays:
@@ -174,7 +424,7 @@ Window Geometry:
   Height: 1044
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001ef00000373fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000373000000ee00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000012f00000373fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000002800000373000000ca00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000004cfc0100000002fb0000000800540069006d00650100000000000007800000042500fffffffb0000000800540069006d00650100000000000004500000000000000000000004560000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000018b00000373fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000373000000ee00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000012f00000373fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000002800000373000000ca00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000004cfc0100000002fb0000000800540069006d00650100000000000007800000042500fffffffb0000000800540069006d00650100000000000004500000000000000000000004ba0000037300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:

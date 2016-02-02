@@ -40,6 +40,12 @@ int main(int argc, char **argv)
                     break;
             }
             
+            //publish camera field of view wire frame
+            if (gocator.isFovViz())
+            {
+                gocator.publish_fov(); 
+            }
+            
             //relax to fit output rate
             loop_rate.sleep();            
       }
