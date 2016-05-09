@@ -20,7 +20,7 @@ Gocator3100Node::Gocator3100Node() :
 
     //Read params from the yaml configuration file
     std::string ip_addr;
-    double int_param; 
+    int int_param;
     nh_.getParam("ip_address", ip_addr);
     nh_.getParam("run_mode", int_param); this->run_mode_ = (RunMode)int_param;
     nh_.getParam("rate", this->rate_);
