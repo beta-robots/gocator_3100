@@ -3,8 +3,8 @@
 <launch>
 
     <!-- User Args  -->
-    <arg name="rviz" default="true" />  <!-- rviz visualization or not  -->
-    <arg name="model_tf" default="false" />  <!-- 3D model visualization and tf  -->
+    <arg name="rviz" default="true" doc="rviz visualization or not"/>
+    <arg name="model_tf" default="true" doc="3D model visualization and tf"/>
 
     <!--3D model as a robot robot description and tf-->
     <group if="$(arg model_tf)">
@@ -44,8 +44,6 @@
             pkg="rviz"
             type="rviz" 
             args="-d $(find zyx_scanner_robot)/rviz/demo1.rviz">
-<!--             "-d $(find gocator_3100)/rviz/gocator_3100.rviz" -->
-<!--             "-d $(find zyx_scanner_robot)/rviz/demo1.rviz" -->
         </node>
     </group>
     
