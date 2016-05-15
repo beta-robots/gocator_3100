@@ -40,7 +40,7 @@ $ catkin_make --only-pkg-with-deps gocator_3100
 2. Properly edit the config/gocator_3100_params.yaml according your configuration and needs. 
 3. Call the launch file. From the package folder would be
 ```shell
-roslaunch launch/gocator_3100.launch
+$ roslaunch launch/gocator_3100.launch
 ```
 
 
