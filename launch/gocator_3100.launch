@@ -5,6 +5,7 @@
     <!-- User Args  -->
     <arg name="rviz" default="true" doc="rviz visualization or not"/>
     <arg name="model_tf" default="true" doc="3D model visualization and tf"/>
+    <arg name="config_file" default="$(find gocator_3100)/config/gocator_3100_params.yaml" doc="3D model visualization and tf"/>
 
     <!--3D model as a robot robot description and tf-->
     <group if="$(arg model_tf)">
@@ -15,13 +16,15 @@
             command="$(find xacro)/xacro.py $(find gocator_3100)/urdf/gocator_3109_example.urdf.xacro"/>            
             
         <!-- Run joint state publisher (Gets robot_description from parameter server)-->
-        <node pkg="joint_state_publisher"
+        <node 
+            pkg="joint_state_publisher"
             type="joint_state_publisher"
             name="gocator_joint_state_publisher" >
         </node>
 
         <!-- Run state publisher (Gets robot_description from parameter server)-->
-        <node pkg="robot_state_publisher"
+        <node 
+            pkg="robot_state_publisher"
             type="robot_state_publisher"
             name="gocator_state_publisher" >
             <param name="~publish_frequency" value="5" />
@@ -34,7 +37,8 @@
         type="gocator_3100"
         name="gocator_3100"
         output="screen">
-        <rosparam command="load" file="$(find gocator_3100)/config/gocator_3100_params.yaml"/>
+<!--         <rosparam command="load" file="$(find gocator_3100)/config/gocator_3100_params.yaml"/> -->
+        <rosparam command="load" file="$(arg config_file)"/>
     </node>      
     
     <!--visualization-->
