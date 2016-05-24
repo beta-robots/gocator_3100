@@ -327,6 +327,34 @@ int Gocator3100::Device::getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & 
     return 1; 
 }
 
+void Gocator3100::Device::getDeviceHealth(std::string & _health_str) const
+{
+    //local variables
+    GoDataSet health_data = kNULL;
+    GoHealthMsg health_msg =kNULL;
+    GoIndicator *health_indicator = kNULL;
+    std::ostringstream sstr; 
+    
+    //get health from device
+    if ( (GoSystem_ReceiveHealth(go_system_, &health_data, RECEIVE_TIMEOUT)) == kOK )
+    {
+        for (unsigned int ii = 0; ii < GoDataSet_Count(health_data); ii++)
+        {
+            health_msg = GoDataSet_At(health_data, ii);
+            for (unsigned int jj = 0; jj < GoHealthMsg_Count(health_msg); jj++)
+            {
+                health_indicator = GoHealthMsg_At(health_msg, jj);
+                sstr << "Indicator[" << jj << "]:\n" 
+                     << "\tId: " << health_indicator->id << "\n"
+                     << "\tInstance: " << health_indicator->instance << "\n"
+                     << "\tValue: " << health_indicator->value << "\n";
+            }
+        }
+        GoDestroy(health_msg);
+    }
+    
+}
+
 int Gocator3100::Device::close()
 {
 	

@@ -158,6 +158,13 @@ class Device
          * 
          **/
         int getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & _p_cloud);
+        
+        /** \brief Returns all health data as a string
+         *
+         * Returns all health data as a string
+         * 
+         **/
+        void getDeviceHealth(std::string & _health_str) const;
 		
 		/** \brief Close the connection to a physical device
 		 * 
