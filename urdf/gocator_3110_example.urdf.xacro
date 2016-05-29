@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="gocator">
+
+    <!-- Set properties -->
+    <xacro:property name="parent" value="world" />
+    <xacro:property name="name" value="gocator" />
+
+    <!-- include the gocator camera -->
+    <xacro:include filename="$(find gocator_3100)/urdf/gocator_3110.urdf.xacro" />
+
+    <!-- Set origin link -->
+    <link name="${parent}" />
+    
+    <!-- call the macro for one camera -->
+    <xacro:gocator_3110 parent="${parent}" name="${name}">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:gocator_3110>
+
+</robot>

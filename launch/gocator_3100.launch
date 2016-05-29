@@ -1,3 +1,5 @@
+<?xml version="1.0"?>
+
 <!-- Launches gocator_3100 acquisition component, and visualization according rviz param  -->
 
 <launch>
@@ -6,6 +8,7 @@
     <arg name="rviz" default="true" doc="rviz visualization or not"/>
     <arg name="model_tf" default="true" doc="3D model visualization and tf"/>
     <arg name="config_file" default="$(find gocator_3100)/config/gocator_3100_params.yaml" doc="3D model visualization and tf"/>
+    <arg name="model" default="gocator_3109_example" doc="Select among available models: gocator_3109_example or gocator_example" />
 
     <!--3D model as a robot robot description and tf-->
     <group if="$(arg model_tf)">
@@ -13,7 +16,7 @@
         <!-- Load robot description -->
         <param 
             name="robot_description" 
-            command="$(find xacro)/xacro.py $(find gocator_3100)/urdf/gocator_3109_example.urdf.xacro"/>            
+            command="$(find xacro)/xacro.py $(find gocator_3100)/urdf/$(arg model).urdf.xacro"/>
             
         <!-- Run joint state publisher (Gets robot_description from parameter server)-->
         <node 
