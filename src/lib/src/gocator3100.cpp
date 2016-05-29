@@ -201,16 +201,22 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
 	//Blocking call up to receive data or timeout
 	if (GoSystem_ReceiveData(go_system_, &dataset, RECEIVE_TIMEOUT) != kOK)
     {
+        //stop Gocator acquisition
+        this->stop();
+
         //no message after timeout
         std::cout << "Error: No data received during the waiting period" << std::endl;
         return -1; 
     }
     else
     {
+        //stop Gocator acquisition
+        this->stop();
+        
 		//std::cout << "Data message received: " << std::endl; 
 		//std::cout << "Dataset count: " << GoDataSet_Count(dataset) << std::endl;
-		
-		// Loop for each data item in the dataset object
+
+        // Loop for each data item in the dataset object
 		for (unsigned int ii = 0; ii < GoDataSet_Count(dataset); ii++)
 		{			
 			//get the data item ii
@@ -235,7 +241,6 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                     
                 case GO_DATA_MESSAGE_TYPE_SURFACE:            
                 {  
-                    
                     //cast to GoSurfaceMsg
                     GoSurfaceMsg surfaceMsg = dataObj;
                     
@@ -243,10 +248,6 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                     unsigned int row_count = GoSurfaceMsg_Length(surfaceMsg);                     
                     unsigned int width = GoSurfaceMsg_Width(surfaceMsg);
                     unsigned int exposure = GoSurfaceMsg_Exposure(surfaceMsg);
-                    //std::cout << "Surface Message" << std::endl; 
-                    //std::cout << "\tLength: " <<  row_count << std::endl; 
-                    //std::cout << "\tWidth: " << width << std::endl; 
-                    //std::cout << "\tExposure: " << exposure << std::endl; 
                     
                     //get offsets and resolutions
                     double xResolution = NM_TO_MM(GoSurfaceMsg_XResolution(surfaceMsg));
@@ -256,7 +257,14 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                     double yOffset = UM_TO_MM(GoSurfaceMsg_YOffset(surfaceMsg));
                     double zOffset = UM_TO_MM(GoSurfaceMsg_ZOffset(surfaceMsg));
                     
-                    //std::cout << "zOffset: " << zOffset << std::endl;
+                    /*
+                    //Print raw cloud metadata    
+                    std::cout << "Surface Message" << std::endl; 
+                    std::cout << "\tLength: " <<  row_count << std::endl; 
+                    std::cout << "\tWidth: " << width << std::endl; 
+                    std::cout << "\tExposure: " << exposure << std::endl;                    
+                    std::cout << "\tzOffset: " << zOffset << std::endl;
+                    */
                     
                     //resize the point cloud
                     _p_cloud.height = row_count;
@@ -273,14 +281,14 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
                         for (unsigned int jj = 0; jj < width; jj++)
                         {
                             //set xy in meters. x component inverted to fulfill right-handed frame (Gocator is left-handed!)
-                            _p_cloud.points[ii*row_count+jj].x = -0.001*(xOffset + xResolution*jj); 
-                            _p_cloud.points[ii*row_count+jj].y = 0.001*(yOffset + yResolution*ii);
+                            _p_cloud.points.at(ii*width+jj).x = -0.001*(xOffset + xResolution*jj); 
+                            _p_cloud.points.at(ii*width+jj).y = 0.001*(yOffset + yResolution*ii);
                             
                             //set z
                             if (data[jj] != INVALID_RANGE_16BIT )
-                                _p_cloud.points[ii*row_count+jj].z = 0.001*(zOffset + zResolution*data[jj]);
+                                _p_cloud.points.at(ii*width+jj).z = 0.001*(zOffset + zResolution*data[jj]);
                             else
-                                _p_cloud.points[ii*row_count+jj].z = 0.001*(INVALID_RANGE_DOUBLE);
+                                _p_cloud.points.at(ii*width+jj).z = 0.001*(INVALID_RANGE_DOUBLE);                            
                         }
                     }
                 }
@@ -291,13 +299,12 @@ int Gocator3100::Device::getSingleSnapshot(pcl::PointCloud<pcl::PointXYZ> & _p_c
 		//destroys received message
 		GoDestroy(dataset);
 	}
-	
-    //stop Gocator acquisition
-    this->stop();
-    
+
+	//stop Gocator acquisition
+    //this->stop();
+
     //return success
     return 1;
-
 }
 
 int Gocator3100::Device::getSingleSnapshotFake(pcl::PointCloud<pcl::PointXYZ> & _p_cloud)

@@ -27,8 +27,8 @@ enum RunMode {SNAPSHOT=0,PUBLISHER};
  * Gocator3100 ROS wrapping class
  * 
  * Two running modes:
- *    \* Snapshot upon request
- *    \* Continuous point cloud publisher (not yet implemented) 
+ *    * Snapshot upon request
+ *    * Continuous point cloud publisher (not yet implemented) 
  * 
  **/
 class Gocator3100Node

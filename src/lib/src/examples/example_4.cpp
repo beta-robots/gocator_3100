@@ -17,8 +17,8 @@ int main(int argc, char **argv)
     
     //configure camera (exposutre and spacing)
     Gocator3100::DeviceConfigs camera_configs;
-    camera_configs.exposure_time_ = 40000; //useconds
-    camera_configs.spacing_interval_ = 0.1; //mm
+    camera_configs.exposure_time_ = 31000; //useconds
+    camera_configs.spacing_interval_ = 0.2; //mm
     camera.configure(camera_configs);
     
 	//point cloud
