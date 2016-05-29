@@ -2,7 +2,8 @@
 #*************** gocator_3100 node and device parameters ************************
 
 #IP address of the camera device
-ip_address: "192.168.1.10"
+#ip_address: "192.168.1.10"
+ip_address: "10.8.1.10"
 
 #run mode: run mode: 0->SNAPSHOT, 1->PUBLISHER
 run_mode: 0
