@@ -1,5 +1,5 @@
 ### Overview
-This repository holds code of a [ROS](http://www.ros.org) package for point cloud acquisition with a [Gocator3109A](http://lmi3d.com/products/gocator/snapshot-sensor) camera. It is basically a ROS wrapper of the low-level API provided by [LMI Technologies](http://lmi3d.com), the manufacturer of the camera. 
+This repository holds code of a [ROS](http://www.ros.org) package for point cloud acquisition with  [Gocator3100](http://lmi3d.com/products/gocator/snapshot-sensor) 3D cameras. It is basically a ROS wrapper of the low-level API provided by [LMI Technologies](http://lmi3d.com), the manufacturer of the camera. 
 
 ![Camera and cloud at rviz](https://github.com/beta-robots/gocator_3100/blob/master/media/gocator_3100_ros_pkg.png)
 
