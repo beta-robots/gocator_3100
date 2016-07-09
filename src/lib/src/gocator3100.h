@@ -165,7 +165,14 @@ class Device
          * 
          **/
         void getDeviceHealth(std::string & _health_str) const;
-		
+
+        /** \brief Returns three device temperatures
+         *
+         * Returns three device temperatures: internal, projector and laser
+         * 
+         **/
+        void getTemperature(double & _internal_temp, double & _projector_temp, double & _laser_temp) const;        
+        
 		/** \brief Close the connection to a physical device
 		 * 
 		 * Close the connection to a physical device

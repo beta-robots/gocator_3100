@@ -360,6 +360,43 @@ void Gocator3100::Device::getDeviceHealth(std::string & _health_str) const
         GoDestroy(health_msg);
     }
     
+    _health_str = sstr.str(); 
+}
+
+void Gocator3100::Device::getTemperature(double & _internal_temp, double & _projector_temp, double & _laser_temp) const
+{
+    //local variables
+    GoDataSet health_data = kNULL;
+    GoHealthMsg health_msg =kNULL;
+    GoIndicator *health_indicator = kNULL;
+    //k32u instance; 
+    
+    //get health dataset from device
+    if ( (GoSystem_ReceiveHealth(go_system_, &health_data, RECEIVE_TIMEOUT)) == kOK )
+    {
+        for (unsigned int ii = 0; ii < GoDataSet_Count(health_data); ii++)
+        {
+            //get the health message
+            health_msg = GoDataSet_At(health_data, ii);
+            
+            //find in the message the internal temperature indicator, and set the value
+            health_indicator = GoHealthMsg_Find(health_msg, GO_HEALTH_TEMPERATURE, 0);
+            if (health_indicator != kNULL) _internal_temp = health_indicator->value; 
+            else _internal_temp = -100.; 
+            
+            //find in the message the projector temperature indicator, and set the value
+            health_indicator = GoHealthMsg_Find(health_msg, GO_HEALTH_PROJECTOR_TEMPERATURE, 0);
+            if (health_indicator != kNULL) _projector_temp = health_indicator->value; 
+            else _projector_temp = -100.; 
+            
+            //find in the message the projector temperature indicator, and set the value
+            health_indicator = GoHealthMsg_Find(health_msg, GO_HEALTH_LASER_TEMPERATURE, 0);
+            if (health_indicator != kNULL) _laser_temp = health_indicator->value; 
+            else _laser_temp = -100.; 
+        }
+        GoDestroy(health_msg);
+    }
+    
 }
 
 int Gocator3100::Device::close()
