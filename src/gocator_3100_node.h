@@ -69,7 +69,7 @@ class Gocator3100Node
         bool fov_viz_; // enable field of view visualization
                 
         //camera device parameters
-        Gocator3100::DeviceConfigs device_params_;
+        Gocator3100::CaptureParams capture_params_;
         
     public:
         //constructor

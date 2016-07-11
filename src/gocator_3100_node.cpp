@@ -25,15 +25,15 @@ Gocator3100Node::Gocator3100Node() :
     nh_.getParam("run_mode", int_param); this->run_mode_ = (RunMode)int_param;
     nh_.getParam("rate", this->rate_);
     nh_.getParam("frame_name", this->frame_name_);
-    nh_.getParam("exposure", this->device_params_.exposure_time_);
-    nh_.getParam("spacing", this->device_params_.spacing_interval_);
+    nh_.getParam("exposure", this->capture_params_.exposure_time_);
+    nh_.getParam("spacing", this->capture_params_.spacing_interval_);
     fov_viz_ = true; //TODO: get it from param server
     
     //create a device object
     g3100_camera_ = new Gocator3100::Device(ip_addr); 
     
     //configure according yaml params
-    g3100_camera_->configure(device_params_);
+    g3100_camera_->configure(capture_params_);
     
     //print
     std::cout << "ROS node Setings: " << std::endl; 
