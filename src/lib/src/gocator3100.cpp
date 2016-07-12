@@ -142,7 +142,7 @@ int Gocator3100::Device::start()
     }
 
     //message to std out
-    std::cout << "Gocator running ... " << std::endl;
+    //std::cout << "Gocator running ... " << std::endl;
     
     //set this->status_ 
     this->status_ = DEVICE_RUNNING;
@@ -163,7 +163,7 @@ int Gocator3100::Device::stop()
     }
 
     //message to std out
-    std::cout << "... Gocator stopped" << std::endl << std::endl;
+    //std::cout << "... Gocator stopped" << std::endl << std::endl;
     
     //set this->status_ 
     this->status_ = DEVICE_CONNECT;

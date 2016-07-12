@@ -4,6 +4,7 @@
 #include "../gocator3100.h"
 
 //std 
+#include <cstdlib>
 #include <iostream>
 
 //constants
@@ -14,6 +15,16 @@ int main(int argc, char **argv)
 {
     //temperatures
     double internal_temp, projector_temp, laser_temp; 
+    
+    //check user params
+    if (argc!=2)
+    {
+        std::cout << "Bad parameters! EXIT" << std::endl;
+        return -1;
+    }
+
+    //get user param
+    unsigned int num_iters = (unsigned int)atoi(argv[1]);
     
     //gocator camera
     Gocator3100::Device camera(SENSOR_IP);
@@ -27,8 +38,8 @@ int main(int argc, char **argv)
     //point cloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr p_cloud_(new pcl::PointCloud<pcl::PointXYZ>());
     
-
-    while (1)
+    //main loop
+    for (unsigned int ii=0; ii<num_iters; ii++)
     {
         //get a single snapshot in this thread
         camera.getSingleSnapshot(*p_cloud_);
@@ -41,7 +52,6 @@ int main(int argc, char **argv)
         
         //sleep
         sleep(5); 
-
     }    
     
     //bye
