@@ -54,29 +54,127 @@ INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS})
 LINK_DIRECTORIES(${PCL_LIBRARY_DIRS})
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-# Set GO_SDK include paths (That could be part of a FindGocator.cmake)
-SET(GO_SDK_4 /home/zyx/ZYX_platform/GO_SDK) # TODO: Should be an env variable!!
-FIND_PATH(
-    GOCATOR_INCLUDES
-    NAMES GoSdk/GoSdk.h
-    PATHS ${GO_SDK_4}/Gocator/GoSdk)
-FIND_PATH(
-    KAPI_INCLUDES
-    NAMES kApi/kApi.h
-    PATHS ${GO_SDK_4}/Platform/kApi)
-INCLUDE_DIRECTORIES(${GOCATOR_INCLUDES} ${KAPI_INCLUDES})
+INCLUDE_DIRECTORIES(go_sdk/)
+# Gocator
+SET(SDK_SRCS
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoLayout.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoMaterial.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoMultiplexBank.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoPartDetection.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoPartMatching.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoPartModel.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoProfileGeneration.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSdkDef.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSdkLib.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSensor.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSensorInfo.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSetup.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSurfaceGeneration.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoSystem.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoTransform.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/GoUtils.c
 
-# Set GO_SDK libs (That could be part of a FindGocator.cmake)
-FIND_LIBRARY(
-    GOCATOR_LIBRARIES
-    NAMES GoSdk
-    PATHS ${GO_SDK_4}/lib/gnud/) 
-FIND_LIBRARY(
-    KAPI_LIBRARIES
-    NAMES kApi
-    PATHS ${GO_SDK_4}/lib/gnud/) 
-message(STATUS "Gocator Headers found at ${GOCATOR_INCLUDES}.")
-message(STATUS "Gocator Libraries found at ${GOCATOR_LIBRARIES}.")
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Internal/GoControl.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Internal/GoDiscovery.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Internal/GoReceiver.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Internal/GoSerializer.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Messages/GoDataSet.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Messages/GoDataTypes.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Messages/GoHealth.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Outputs/GoAnalog.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Outputs/GoDigital.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Outputs/GoEthernet.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Outputs/GoOutput.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Outputs/GoSerial.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoExtParam.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoExtTool.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoMeasurement.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoMeasurements.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoProfileTools.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoProfileToolUtils.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoRangeTools.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoSurfaceTools.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoSurfaceToolUtils.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoTool.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/GoSdk/Tools/GoTools.c
+)
+
+# Platform
+SET(KAPI_SRCS
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kAlloc.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kApiDef.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kApiLib.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kAssembly.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kObject.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kType.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/kValue.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kArray1.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kArray2.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kArray3.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kArrayList.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kBox.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kBytes.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kCollection.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kImage.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kList.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kMap.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kMath.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kQueue.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kString.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Data/kXml.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kDat5Serializer.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kDat6Serializer.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kDirectory.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kFile.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kHttpServer.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kHttpServerChannel.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kHttpServerRequest.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kHttpServerResponse.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kMemory.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kNetwork.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kPath.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kSerializer.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kSocket.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kStream.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kTcpClient.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kTcpServer.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Io/kUdpClient.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kAtomic.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kLock.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kMsgQueue.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kPeriodic.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kSemaphore.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kThread.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Threads/kTimer.c
+
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kBackTrace.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kBackTrace.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kBackTrace.x.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kDebugAlloc.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kDebugAlloc.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kDebugAlloc.x.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kDynamicLib.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kDynamicLib.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kDynamicLib.x.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kEvent.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kObjectPool.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kObjectPool.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kObjectPool.x.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kPlugin.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kPoolAlloc.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kPoolAlloc.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kPoolAlloc.x.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kUserAlloc.c
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kUserAlloc.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kUserAlloc.x.h
+    ${PROJECT_SOURCE_DIR}/go_sdk/kApi/Utils/kUtils.c
+)
 
 # add other necessary include directories
 include_directories(src/ src/lib/src/ ${catkin_INCLUDE_DIRS})
@@ -95,18 +193,6 @@ SET(SRCS_NODE
     src/gocator_3100_node_main.cpp
 )
     
-# add_service_files(
-#   FILES
-#   PointCloudAsService.srv
-# )
-
-## Generate added messages and services
-# generate_messages(
-#       DEPENDENCIES 
-#       std_msgs 
-#       sensor_msgs
-# )
-
 #dynamic reconfigure cfg file
 generate_dynamic_reconfigure_options(cfg/gocator_3100_params.cfg)
 
@@ -123,21 +209,40 @@ catkin_package(
         pcl_conversions
 )
 
-#Build library (TODO: Should call a CMakeLists.txt at src/lib/)
-ADD_LIBRARY(${PROJECT_NAME}_LIB SHARED ${SRCS_LIB})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}_LIB ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+# Libraries
+ADD_LIBRARY(kApi SHARED
+    ${KAPI_SRCS}
+)
+TARGET_LINK_LIBRARIES(kApi
+    pthread
+    rt
+    m
+    ${CMAKE_DL_LIBS}
+)
+SET_TARGET_PROPERTIES(kApi PROPERTIES LINKER_LANGUAGE CXX)
 
-#Build executable
-ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS_NODE} ${SRCS_LIB})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${catkin_LIBRARIES})
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+ADD_LIBRARY(GoSdk SHARED
+    ${SDK_SRCS}
+)
+TARGET_LINK_LIBRARIES(GoSdk
+    kApi
+    pthread
+    rt
+    m
+)
+ADD_DEPENDENCIES(GoSdk kApi)
+SET_TARGET_PROPERTIES(GoSdk PROPERTIES LINKER_LANGUAGE CXX)
 
-#Build examples TODO: Should be called from a CMakeLists at at src/lib/
+ADD_LIBRARY(${PROJECT_NAME}_LIB SHARED 
+    ${SRCS_LIB}
+)
+ADD_DEPENDENCIES(${PROJECT_NAME}_LIB GoSdk)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}_LIB GoSdk kApi ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
+# Executable
+ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS_NODE})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${PROJECT_NAME}_LIB GoSdk kApi ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${catkin_LIBRARIES})
+ADD_DEPENDENCIES(${PROJECT_NAME} ${PROJECT_NAME}_LIB ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+
+# Examples TODO: Should be called from a CMakeLists at at src/lib/
 ADD_SUBDIRECTORY(src/lib/src/examples)
-
-## Declare a cpp executable
-# add_executable(btr_point_tracker_node ${SRCS} src/btr_point_tracker_main.cpp)
-# add_dependencies(btr_point_tracker_node ${PROJECT_NAME}_EXPORTED_TARGETS)
-# target_link_libraries(btr_point_tracker_node ${OpenCV_LIBS} ${catkin_LIBRARIES})
-
-
