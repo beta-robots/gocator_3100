@@ -9,6 +9,7 @@
 
 //constants
 #define SENSOR_IP "192.168.1.10"
+#define TEMP_LIMIT 52000
 
 //main
 int main(int argc, char **argv)
@@ -38,6 +39,8 @@ int main(int argc, char **argv)
     //point cloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr p_cloud_(new pcl::PointCloud<pcl::PointXYZ>());
     
+    std::cout << "internal_temp" << " , " <<  "projector_temp" << " , " << "laser_temp" << "," << "iter_number" << std::endl;
+
     //main loop
     for (unsigned int ii=0; ii<num_iters; ii++)
     {
@@ -48,11 +51,20 @@ int main(int argc, char **argv)
         camera.getTemperature(internal_temp, projector_temp, laser_temp);
         
         //output
-        std::cout << internal_temp << " , " <<  projector_temp << " , " << laser_temp << std::endl;
+        std::cout << internal_temp << " , " <<  projector_temp << " , " << laser_temp << "," << ii << std::endl;
+
+        //safe limit for temp
+        if( internal_temp >  TEMP_LIMIT)
+        {
+            std::cout << "Temperature limit reached" << std::endl;
+            break;
+        }
         
         //sleep
         sleep(5); 
-    }    
+    }
+
+
     
     //bye
     return 1;
