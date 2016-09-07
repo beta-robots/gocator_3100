@@ -8,7 +8,7 @@
 #include <iostream>
 
 //constants
-#define SENSOR_IP "192.168.1.10"
+#define SENSOR_IP "10.8.1.10"
 #define TEMP_LIMIT 52000
 
 //main
