@@ -41,7 +41,7 @@ Gocator3100::Device::Device(const std::string & _ip_address)
 	
 	//Success case. Set status and device fixed params (ip, model name and serial number ).
 	status_ = DEVICE_FOUND;
-	params_.ip_address_ = _ip_address;
+	device_params_.ip_address_ = _ip_address;
 	
 	// create connection to GoSensor object
 	if ((status = GoSensor_Connect(go_sensor_)) != kOK)
@@ -72,20 +72,20 @@ Gocator3100::Device::Device(const std::string & _ip_address)
         std::cout << "Device(). Error: GoSensor_Model: " << status << std::endl;
         return; 
     }
-    params_.model_name_ = model_name; 
+    device_params_.model_name_ = model_name; 
 
 	//Obtain camera Serial number
-	params_.sn_ = (unsigned int)GoSensor_Id(go_sensor_);
+	device_params_.sn_ = (unsigned int)GoSensor_Id(go_sensor_);
         
     //Obtain exposure
-	configs_.exposure_time_ = GoSetup_Exposure(go_setup_, GO_ROLE_MAIN);
+	capture_params_.exposure_time_ = GoSetup_Exposure(go_setup_, GO_ROLE_MAIN);
     
     //Obtain spacing interval 
-    configs_.spacing_interval_ = GoSetup_SpacingInterval(go_setup_, GO_ROLE_MAIN);
+    capture_params_.spacing_interval_ = GoSetup_SpacingInterval(go_setup_, GO_ROLE_MAIN);
     
 	//print info
 	std::cout << "Found Sensor: " << std::endl; 
-	params_.print(); 
+	device_params_.print(); 
 }
 
 Gocator3100::Device::~Device()
@@ -100,7 +100,7 @@ Gocator3100::Device::~Device()
 	std::cout << "~Device(). Gocator Sensor Stopped and Device Object Destroyed." << std::endl;
 }
 
-int Gocator3100::Device::configure(const DeviceConfigs & _configs)
+int Gocator3100::Device::configure(const CaptureParams & _configs)
 {
     kStatus status;
     
@@ -118,13 +118,13 @@ int Gocator3100::Device::configure(const DeviceConfigs & _configs)
         return -1;
     }
         
-    //set this->configs_ with true values from camera
-    configs_.exposure_time_ = GoSetup_Exposure(go_setup_, GO_ROLE_MAIN);
-    configs_.spacing_interval_ = GoSetup_SpacingInterval(go_setup_, GO_ROLE_MAIN);
+    //set this->capture_params_ with true values from camera
+    capture_params_.exposure_time_ = GoSetup_Exposure(go_setup_, GO_ROLE_MAIN);
+    capture_params_.spacing_interval_ = GoSetup_SpacingInterval(go_setup_, GO_ROLE_MAIN);
     
     //print
     std::cout << "Configuration Setings: " << std::endl; 
-    configs_.print();
+    capture_params_.print();
     
     //return
     return 1;
@@ -142,7 +142,7 @@ int Gocator3100::Device::start()
     }
 
     //message to std out
-    std::cout << "Gocator running ... " << std::endl;
+    //std::cout << "Gocator running ... " << std::endl;
     
     //set this->status_ 
     this->status_ = DEVICE_RUNNING;
@@ -163,7 +163,7 @@ int Gocator3100::Device::stop()
     }
 
     //message to std out
-    std::cout << "... Gocator stopped" << std::endl << std::endl;
+    //std::cout << "... Gocator stopped" << std::endl << std::endl;
     
     //set this->status_ 
     this->status_ = DEVICE_CONNECT;
@@ -356,6 +356,43 @@ void Gocator3100::Device::getDeviceHealth(std::string & _health_str) const
                      << "\tInstance: " << health_indicator->instance << "\n"
                      << "\tValue: " << health_indicator->value << "\n";
             }
+        }
+        GoDestroy(health_msg);
+    }
+    
+    _health_str = sstr.str(); 
+}
+
+void Gocator3100::Device::getTemperature(double & _internal_temp, double & _projector_temp, double & _laser_temp) const
+{
+    //local variables
+    GoDataSet health_data = kNULL;
+    GoHealthMsg health_msg =kNULL;
+    GoIndicator *health_indicator = kNULL;
+    //k32u instance; 
+    
+    //get health dataset from device
+    if ( (GoSystem_ReceiveHealth(go_system_, &health_data, RECEIVE_TIMEOUT)) == kOK )
+    {
+        for (unsigned int ii = 0; ii < GoDataSet_Count(health_data); ii++)
+        {
+            //get the health message
+            health_msg = GoDataSet_At(health_data, ii);
+            
+            //find in the message the internal temperature indicator, and set the value
+            health_indicator = GoHealthMsg_Find(health_msg, GO_HEALTH_TEMPERATURE, 0);
+            if (health_indicator != kNULL) _internal_temp = health_indicator->value; 
+            else _internal_temp = -100.; 
+            
+            //find in the message the projector temperature indicator, and set the value
+            health_indicator = GoHealthMsg_Find(health_msg, GO_HEALTH_PROJECTOR_TEMPERATURE, 0);
+            if (health_indicator != kNULL) _projector_temp = health_indicator->value; 
+            else _projector_temp = -100.; 
+            
+            //find in the message the projector temperature indicator, and set the value
+            health_indicator = GoHealthMsg_Find(health_msg, GO_HEALTH_LASER_TEMPERATURE, 0);
+            if (health_indicator != kNULL) _laser_temp = health_indicator->value; 
+            else _laser_temp = -100.; 
         }
         GoDestroy(health_msg);
     }

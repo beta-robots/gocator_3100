@@ -15,11 +15,11 @@ int main(int argc, char **argv)
 	//gocator camera
 	Gocator3100::Device camera(SENSOR_IP);
     
-    //configure camera (exposutre and spacing)
-    Gocator3100::DeviceConfigs camera_configs;
-    camera_configs.exposure_time_ = 31000; //useconds
-    camera_configs.spacing_interval_ = 0.2; //mm
-    camera.configure(camera_configs);
+    //configure camera (exposure and spacing)
+    Gocator3100::CaptureParams capture_params;
+    capture_params.exposure_time_ = 31000; //useconds
+    capture_params.spacing_interval_ = 0.2; //mm
+    camera.configure(capture_params);
     
 	//point cloud
 	pcl::PointCloud<pcl::PointXYZ>::Ptr p_cloud_(new pcl::PointCloud<pcl::PointXYZ>());

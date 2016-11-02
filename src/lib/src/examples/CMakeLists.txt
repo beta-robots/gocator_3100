@@ -14,6 +14,10 @@ TARGET_LINK_LIBRARIES(example_3 ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
 ADD_EXECUTABLE(example_4 example_4.cpp)
 TARGET_LINK_LIBRARIES(example_4 ${PROJECT_NAME}_LIB ${PCL_LIBRARIES})
 
-# Build Factory restore
-ADD_EXECUTABLE(FactoryRestore FactoryRestore.c)
-TARGET_LINK_LIBRARIES(FactoryRestore ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
+# Build example_5_factory_restore
+ADD_EXECUTABLE(example_5_factory_restore example_5_factory_restore.c)
+TARGET_LINK_LIBRARIES(example_5_factory_restore ${GOCATOR_LIBRARIES} ${KAPI_LIBRARIES})
+
+# Build example_6_health_temperature
+ADD_EXECUTABLE(example_6_health_temperature example_6_health_temperature.cpp)
+TARGET_LINK_LIBRARIES(example_6_health_temperature ${PROJECT_NAME}_LIB ${PCL_LIBRARIES})

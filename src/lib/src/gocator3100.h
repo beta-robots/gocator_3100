@@ -36,7 +36,7 @@ struct DeviceParams
 	std::string model_name_; 
 	unsigned int sn_; 
 	
-	void print()
+	void print() const
 	{
 		std::cout << "\tIP ad: \t" << ip_address_ << std::endl;
 		std::cout << "\tModel: \t" << model_name_ << std::endl;
@@ -45,12 +45,12 @@ struct DeviceParams
 };
 
 //device configuration struct
-struct DeviceConfigs
+struct CaptureParams
 {
 	double exposure_time_; //in useconds
     double spacing_interval_; //in millimeters
     
-    void print()
+    void print() const
     {
         std::cout << "\texposure [us]: \t" << exposure_time_ << std::endl;
         std::cout << "\tspacing [mm]: \t" << spacing_interval_ << std::endl;
@@ -68,10 +68,10 @@ class Device
 		unsigned int status_;
 		
 		//device fixed params
-		DeviceParams params_;
+		DeviceParams device_params_;
 		
 		//device configuration
-		DeviceConfigs configs_;
+		CaptureParams capture_params_;
 		
 		//GO API objects
 		kAssembly go_api_;
@@ -108,7 +108,7 @@ class Device
 		 * Set/get device parameters to/from the camera
 		 * 
 		 **/
-		int configure(const DeviceConfigs & _configs);
+		int configure(const CaptureParams & _configs);
         
         /** \brief Start device data acquisition
          * 
@@ -165,7 +165,14 @@ class Device
          * 
          **/
         void getDeviceHealth(std::string & _health_str) const;
-		
+
+        /** \brief Returns three device temperatures
+         *
+         * Returns three device temperatures: internal, projector and laser
+         * 
+         **/
+        void getTemperature(double & _internal_temp, double & _projector_temp, double & _laser_temp) const;        
+        
 		/** \brief Close the connection to a physical device
 		 * 
 		 * Close the connection to a physical device
