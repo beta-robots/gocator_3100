@@ -55,7 +55,7 @@ LINK_DIRECTORIES(${PCL_LIBRARY_DIRS})
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
 # Set GO_SDK include paths (That could be part of a FindGocator.cmake)
-SET(GO_SDK_4 /home/andreu/dev/GO_SDK) # TODO: Should be an env variable!!
+SET(GO_SDK_4 /home/zyx/ZYX_platform/GO_SDK) # TODO: Should be an env variable!!
 FIND_PATH(
     GOCATOR_INCLUDES
     NAMES GoSdk/GoSdk.h
