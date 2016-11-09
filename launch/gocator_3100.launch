@@ -16,7 +16,7 @@
         <!-- Load robot description -->
         <param 
             name="robot_description" 
-            command="$(find xacro)/xacro.py $(find gocator_3100)/urdf/$(arg model).urdf.xacro"/>
+            command="$(find xacro)/xacro --inorder $(find gocator_3100)/urdf/$(arg model).urdf.xacro"/>
             
         <!-- Run joint state publisher (Gets robot_description from parameter server)-->
         <node 
