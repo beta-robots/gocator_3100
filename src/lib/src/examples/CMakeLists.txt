@@ -27,6 +27,6 @@ ADD_EXECUTABLE(example_6_health_temperature example_6_health_temperature.cpp)
 TARGET_LINK_LIBRARIES(example_6_health_temperature ${PROJECT_NAME}_LIB ${PCL_LIBRARIES})
 
 # Build Factory restore
-ADD_EXECUTABLE(FactoryRestore FactoryRestore.c)
-TARGET_LINK_LIBRARIES(FactoryRestore GoSdk kApi)
-add_dependencies(FactoryRestore GoSdk kApi ${PCL_LIBRARIES})
+# ADD_EXECUTABLE(FactoryRestore FactoryRestore.c)
+# TARGET_LINK_LIBRARIES(FactoryRestore GoSdk kApi)
+# add_dependencies(FactoryRestore GoSdk kApi ${PCL_LIBRARIES})
